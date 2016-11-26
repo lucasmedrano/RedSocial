@@ -7,16 +7,16 @@ class Grafo(object):
     '''Clase que representa un grafo. El grafo puede ser dirigido, o no, y puede no indicarsele peso a las aristas
     (se comportara como peso = 1). Implementado como "diccionario de diccionarios"'''
     
-    def __init__(self, es_dirigido = False):
+    def __init__(self, es_dirigido = False, vertices, cantidad_vertices = 0, cantidad_aristas = 0):
         '''Crea el grafo. El parametro 'es_dirigido' indica si sera dirigido, o no.'''
         self.es_dirigido = es_dirigido
         #Diccionario que tendrá como claves a los nombres de los personajes, y como valor, otro diccionario. Este segundo diccionario tendrá los
         #adyacentes al vértice, y como dato, el peso de la relacion vertice->adyacente
-        self.vertices = {}
+        self.vertices = vertices
         #Numero entero, indica la cantidad de vertices que tiene el grafo. Opcional
-        self.cantidad_vertices = 0
+        self.cantidad_vertices = cantidad_vertices
         #Numero entero, cantidad de aristas que tiene el grafo. Opcional
-        self.cantidad_aristas = 0
+        self.cantidad_aristas = cantidad_aristas
 
     def __len__(self):
         '''Devuelve la cantidad de vertices del grafo'''
@@ -136,10 +136,10 @@ class Grafo(object):
                 - 'orden' es un diccionario que indica para un nombre, cual es su orden en el recorrido BFS
         '''
 
-    q = Cola()
-    q.encolar(origen)
-    visitados[origen] = True
-    while len(cola) > 0:
+        q = Cola()
+        q.encolar(origen)
+        visitados[origen] = True
+        while len(cola) > 0:
         v = cola.desencolar()
         for w in grafo.adyacentes(v):
             if w not in visitados:
@@ -228,5 +228,7 @@ class Grafo(object):
                 recorrido.append(actual)
             
         return recorrido
+
+
 
 
