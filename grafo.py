@@ -98,6 +98,8 @@ class Grafo(object):
     
     #Recibe grafo, y tipo que indica si es BFS o DFS, luego llama a las funciones _BFS o _DFS segun corresponda.
     def recorrido(grafo, tipo):
+        ''' Recorre el grafo y dependiendo del tipo que se le pase por parámetro lo recorre de forma BFS o DFS.
+            Devuelve dos diccionarios, uno llamado padre y otro orden que indican el orden de como se recorrio el grafo'''
         visitados = {} #diccionario
         padre = {}
         orden = {}
@@ -193,6 +195,7 @@ class Grafo(object):
         raise NotImplementedError()
 
     def vertice_aleatorio(pesos):
+        ´''' Devuelve un vértice aleatorio de los adyacentes del vertice que se recibe '''
         #Pesos es un diccionario de pesos, clave vértice vecino, valor el peso. Acomodar a implementacion
         total = sum(pesos.values())
         rand = random.uniform(0, total)
