@@ -3,6 +3,21 @@ import random
 visitar_nulo = lambda a,b,c,d: True
 heuristica_nula = lambda actual,destino: 0
 
+class Arista:
+    def __init__(self, (desde, hasta), peso):
+        self.desde = desde
+        self.hasta = hasta
+        self.peso = peso
+
+    def __lt__(self, otro):
+        if(self.peso < otro.peso) return -1
+        elif(self.peso > otro.peso) return 1
+        return 0
+
+class Conjunto:
+    def __init__(self, lista_vertices):
+        self.lsita_vertices = vertices
+
 class Grafo(object):
     '''Clase que representa un grafo. El grafo puede ser dirigido, o no, y puede no indicarsele peso a las aristas
     (se comportara como peso = 1). Implementado como "diccionario de diccionarios"'''
