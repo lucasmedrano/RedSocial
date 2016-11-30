@@ -4,7 +4,7 @@ visitar_nulo = lambda a,b,c,d: True
 heuristica_nula = lambda actual,destino: 0
 
 class Arista:
-    def __init__(self, (desde, hasta), peso):
+    def __init__(self, desde, hasta, peso):
         self.desde = desde
         self.hasta = hasta
         self.peso = peso
@@ -154,20 +154,18 @@ class Grafo(object):
                 - 'orden' es un diccionario que indica para un nombre, cual es su orden en el recorrido BFS
         '''
 
-        q = Cola()
-        q.encolar(origen)
+        q = []
+        q.append(origen)
         visitados[origen] = True
-        while len(cola) > 0:
-        v = cola.desencolar()
-        for w in grafo.adyacentes(v):
-            if w not in visitados:
-                visitados[w] = True
-                padre[w] = v
-                orden[w] = orden[v] + 1
-                q.encolar(w)
+        while(len(q) > 0):
+            v = lista.pop(0)
+            for w in grafo.adyacentes(v):
+                if w not in visitados:
+                    visitados[w] = True
+                    padre[w] = v
+                    orden[w] = orden[v] + 1
+                    q.append(w)
 
-
-        raise NotImplementedError()
     
     def _dfs(self, inicio, visitados, padre, orden):
         '''Realiza un recorrido DFS dentro del grafo, aplicando la funcion pasada por parametro en cada vertice visitado.
@@ -247,7 +245,4 @@ class Grafo(object):
                 recorrido.append(actual)
             
         return recorrido
-
-
-
 
