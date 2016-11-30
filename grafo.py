@@ -1,8 +1,27 @@
 import random
+import math
 
 visitar_nulo = lambda a,b,c,d: True
 heuristica_nula = lambda actual,destino: 0
 
+class Personaje:
+    def __init__(self, nombre, distancia = math.inf):
+        self.nombre = nombre
+        self.distancia = distancia
+
+    def __lt__(self, otro):
+        return self.distancia < otro.distancia
+
+    def __eq__(self, otro):
+        return self.distancia == otro.distancia
+
+    def __gt__(self, otro):
+        return self.distancia > otro.distancia
+
+    def cambiar_distancia(self, distancia_nueva):
+        self.distancia = distancia_nueva
+    def obtener_nombre(self):
+        return self.nombre
 class Arista:
     def __init__(self, desde, hasta, peso):
         self.desde = desde
@@ -10,20 +29,19 @@ class Arista:
         self.peso = peso
 
     def __lt__(self, otro):
-        if(self.peso < otro.peso) return -1
-        elif(self.peso > otro.peso) return 1
-        return 0
+        return self.peso < otro.peso
 
-class Conjunto:
-    def __init__(self, lista_vertices):
-        self.lsita_vertices = vertices
+    def __eq__(self, otro):
+        return self.peso == otro.peso
 
+    def __gt__(self, otro):
+        return self.peso > otro.peso
 
-class Grafo(object):
+class Grafo():
     '''Clase que representa un grafo. El grafo puede ser dirigido, o no, y puede no indicarsele peso a las aristas
     (se comportara como peso = 1). Implementado como "diccionario de diccionarios"'''
     
-    def __init__(self, es_dirigido = False, vertices, cantidad_vertices = 0, cantidad_aristas = 0):
+    def __init__(self, vertices, es_dirigido = False, cantidad_vertices = 0, cantidad_aristas = 0):
         '''Crea el grafo. El parametro 'es_dirigido' indica si sera dirigido, o no.'''
         self.es_dirigido = es_dirigido
         #Diccionario que tendrá como claves a los nombres de los personajes, y como valor, otro diccionario. Este segundo diccionario tendrá los
@@ -201,15 +219,42 @@ class Grafo(object):
             - Listado de vertices (identificadores) ordenado con el recorrido, incluyendo a los vertices de origen y destino. 
             En caso que no exista camino entre el origen y el destino, se devuelve None. 
         '''
-        raise NotImplementedError()
-    
-    def mst(self):
-        '''Calcula el Arbol de Tendido Minimo (MST) para un grafo no dirigido. En caso de ser dirigido, lanza una excepcion.
-        Devuelve: un nuevo grafo, con los mismos vertices que el original, pero en forma de MST.'''
-        raise NotImplementedError()
+        heap = []
+        distancia = {}
+        padre = {}
+
+        for vertice in grafo.vertices.keys():
+            distancia[vertice] = math.inf
+            padre[vertice] = None
+            personaje = Personaje(vertice)
+            heapq.heappush(heap, personaje)
+
+        distancia[origen] = 0
+        personaje.cambiar_distancia(0)
+
+        while(heap):
+            personaje = heapq.heappop(heap)
+            vertice = personaje.obtener_nombre()
+            for(adyacente in grafo.adyacentes(vertice)):
+                if(distancia[vertice] + grafo.obtener_peso_arista(vertice, adyacente)) < distancia[adyacente]:
+                    distancia[adyacente] = distancia[vertice] + grafo.obtener_peso_arista(vertice, adyacente)
+                    personaje.cambiar_distancia(distancia[vertice] + grafo.obtener_peso_arista(vertice, adyacente))
+                    padre[adyacente] = vertice
+                    heapq.heapify()
+        camino_minimo = []
+        vertice = destino
+        camino_minimo.append(vertice)
+        while(vertice != origen):
+            camino_minimo.append(padre[vertice])
+            vertice = padre[vertice]
+        camino_minimo.reverse()
+        return camino_minimo
+
+
+
 
     def vertice_aleatorio(pesos):
-        ´''' Devuelve un vértice aleatorio de los adyacentes del vertice que se recibe '''
+        ''' Devuelve un vértice aleatorio de los adyacentes del vertice que se recibe '''
         #Pesos es un diccionario de pesos, clave vértice vecino, valor el peso. Acomodar a implementacion
         total = sum(pesos.values())
         rand = random.uniform(0, total)
@@ -245,4 +290,3 @@ class Grafo(object):
                 recorrido.append(actual)
             
         return recorrido
-
