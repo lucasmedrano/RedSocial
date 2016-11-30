@@ -18,6 +18,7 @@ class Conjunto:
     def __init__(self, lista_vertices):
         self.lsita_vertices = vertices
 
+
 class Grafo(object):
     '''Clase que representa un grafo. El grafo puede ser dirigido, o no, y puede no indicarsele peso a las aristas
     (se comportara como peso = 1). Implementado como "diccionario de diccionarios"'''
@@ -65,7 +66,7 @@ class Grafo(object):
         #Si no es dirigido, se cambia tambien el peso de la arista inversa
         if not(self.es_dirigido):
             self.vertices[hasta][desde] = peso
-        self.cantidad_aristas += 1;
+        self.cantidad_aristas =+ 1;
         
     def borrar_arista(self, desde, hasta):
         '''Borra una arista que conecta los vertices indicados. Parametros:
@@ -88,7 +89,7 @@ class Grafo(object):
         #Si no es dirigido, se borra también la arista Hasta->Desde
         if not(self.es_dirigido):
             self.vertices[hasta].pop(desde)
-        self.cantidad_aristas -= 1;
+        self.cantidad_aristas =- 1;
     
     def obtener_peso_arista(self, desde, hasta):
         '''Obtiene el peso de la arista que va desde el vertice 'desde', hasta el vertice 'hasta'. Parametros:
