@@ -65,7 +65,7 @@ class Grafo(object):
         #Si no es dirigido, se cambia tambien el peso de la arista inversa
         if not(self.es_dirigido):
             self.vertices[hasta][desde] = peso
-        self.cantidad_aristas =+ 1;
+        self.cantidad_aristas += 1;
         
     def borrar_arista(self, desde, hasta):
         '''Borra una arista que conecta los vertices indicados. Parametros:
@@ -88,7 +88,7 @@ class Grafo(object):
         #Si no es dirigido, se borra también la arista Hasta->Desde
         if not(self.es_dirigido):
             self.vertices[hasta].pop(desde)
-        self.cantidad_aristas =- 1;
+        self.cantidad_aristas -= 1;
     
     def obtener_peso_arista(self, desde, hasta):
         '''Obtiene el peso de la arista que va desde el vertice 'desde', hasta el vertice 'hasta'. Parametros:
