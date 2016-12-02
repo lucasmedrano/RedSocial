@@ -131,7 +131,7 @@ class Grafo():
         return self.vertices.keys()
     
     #Recibe grafo, y tipo que indica si es BFS o DFS, luego llama a las funciones _BFS o _DFS segun corresponda.
-    def recorrido(grafo, tipo):
+        def recorrido(grafo, tipo):
         ''' Recorre el grafo y dependiendo del tipo que se le pase por parámetro lo recorre de forma BFS o DFS.
             Devuelve dos diccionarios, uno llamado padre y otro orden que indican el orden de como se recorrio el grafo'''
         visitados = {} #diccionario
@@ -222,25 +222,29 @@ class Grafo():
         heap = []
         distancia = {}
         padre = {}
+        visitados = {}
 
         for vertice in grafo.vertices.keys():
             distancia[vertice] = math.inf
             padre[vertice] = None
-            personaje = Personaje(vertice)
-            heapq.heappush(heap, personaje)
+            visitado[vertice] = None
 
+        personaje = Personaje(origen)
         distancia[origen] = 0
         personaje.cambiar_distancia(0)
+        heapq.heappush(heap, personaje)
 
         while(heap):
             personaje = heapq.heappop(heap)
             vertice = personaje.obtener_nombre()
-            for(adyacente in grafo.adyacentes(vertice)):
-                if(distancia[vertice] + grafo.obtener_peso_arista(vertice, adyacente)) < distancia[adyacente]:
+            visitados[vertice] = True
+            for adyacente in grafo.adyacentes(vertice):
+                if not (vertice in visitados) and (distancia[adyacente] > (distancia[vertice] + grafo.obtener_peso_arista(vertice, adyacente))):
                     distancia[adyacente] = distancia[vertice] + grafo.obtener_peso_arista(vertice, adyacente)
-                    personaje.cambiar_distancia(distancia[vertice] + grafo.obtener_peso_arista(vertice, adyacente))
                     padre[adyacente] = vertice
-                    heapq.heapify()
+                    personaje = Personaje(adyacente)
+                    heapq.heappush(heap, personaje)
+
         camino_minimo = []
         vertice = destino
         camino_minimo.append(vertice)
@@ -249,6 +253,7 @@ class Grafo():
             vertice = padre[vertice]
         camino_minimo.reverse()
         return camino_minimo
+
 
 
 
