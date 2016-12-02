@@ -1,5 +1,6 @@
 import grafo
 import sys
+from collections import Counter
 CANT_MAX_PARAM = 2
 ARCHIVO = 1
 
@@ -34,13 +35,31 @@ def crear_grafo_archivo(archivo):
         while (linea):
             linea = linea.rstrip('\n')
             arista = linea.split(' ')
-            vertices[dic_auxiliar[arista[0]]][dic_auxiliar[arista[1]]] = arista[2]
-            vertices[dic_auxiliar[arista[1]]][dic_auxiliar[arista[0]]] = arista[2]
+            vertices[dic_auxiliar[arista[0]]][dic_auxiliar[arista[1]]] = float(arista[2])
+            vertices[dic_auxiliar[arista[1]]][dic_auxiliar[arista[0]]] = float(arista[2])
             cont_aristas += 1
             linea = archivo_lectura.readline()
         
     grafo_marvel = grafo.Grafo(vertices, False, cont_vertices, cont_aristas)
     return grafo_marvel
+
+
+def Similares(grafo_marvel, personaje, cantidad):
+
+    recorrido = grafo_marvel.random_walk(1000, personaje, True)
+    cant_rep_personajes = Counter(recorrido) #Devuelve un diccionario con los personajes que paso y cauntas veces paso por ese mismo
+    similares = cant_rep_personajes.most_common(cantidad + 1) #Devuelve una lista en la que se guardan los personajes que mas se repitieron y cuantas veces lo hicieron
+                                                              # el 1 se suma por si dentro de los mas comunes esta el personaje que se le pide los similares  
+    contador = 0
+    posicion = 0
+    while (contador != cantidad):
+        if (similares[posicion][0] != personaje):
+            print(similares[posicion][0])
+            contador += 1
+        posicion += 1       
+
+    
+
 
 
 def main():
@@ -51,7 +70,11 @@ def main():
 
     archivo = sys.argv[ARCHIVO]    
 
-    grafo = crear_grafo_archivo(archivo)
+    grafo_marvel = crear_grafo_archivo(archivo)
+
+    Similares(grafo_marvel, "IRON MAN", 3)
 
 
-main()
+
+
+main()  
