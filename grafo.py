@@ -207,7 +207,7 @@ class Grafo():
             if w not in visitados:
                 padre[w] = v
                 orden[w] = orden[v] + 1
-                _dfs(grafo, w, visitados, padre, orden)
+                self._dfs(w, visitados, padre, orden)
         
     def camino_minimo(self, origen, destino, heuristica=heuristica_nula):
         '''Devuelve el recorrido minimo desde el origen hasta el destino, aplicando el algoritmo de Dijkstra, o bien
@@ -258,7 +258,7 @@ class Grafo():
 
 
 
-    def vertice_aleatorio(pesos):
+    def vertice_aleatorio(self, pesos):
         ''' Devuelve un vértice aleatorio de los adyacentes del vertice que se recibe '''
         #Pesos es un diccionario de pesos, clave vértice vecino, valor el peso. Acomodar a implementacion
         total = sum(pesos.values())
@@ -291,7 +291,7 @@ class Grafo():
                 recorrido.append(actual) #Lo agrego a la lista
         if(pesado):
             for i in range(largo):
-                actual = vertice_aleatorio(self.vertices[actual])
+                actual = self.vertice_aleatorio(self.vertices[actual])
                 recorrido.append(actual)
             
         return recorrido
