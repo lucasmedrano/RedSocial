@@ -128,7 +128,7 @@ class Grafo():
         #Si "nombre" no pertenece al grafo, se lanza un KeyError
         if(nombre not in self.vertices.keys()):
             raise KeyError("el nombre ingresado no forma parte del grafo")
-        return self.vertices.keys()
+        return self.vertices[nombre].keys()
     
     #Recibe grafo, y tipo que indica si es BFS o DFS, luego llama a las funciones _BFS o _DFS segun corresponda.
         def recorrido(grafo, tipo):
