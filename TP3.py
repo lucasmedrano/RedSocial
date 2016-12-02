@@ -46,7 +46,7 @@ def crear_grafo_archivo(archivo):
 
 def Similares(grafo_marvel, personaje, cantidad):
 
-    recorrido = grafo_marvel.random_walk(1000, personaje, True)
+    recorrido = grafo_marvel.random_walk(5000, personaje, True)
     cant_rep_personajes = Counter(recorrido) #Devuelve un diccionario con los personajes que paso y cauntas veces paso por ese mismo
     similares = cant_rep_personajes.most_common(cantidad + 1) #Devuelve una lista en la que se guardan los personajes que mas se repitieron y cuantas veces lo hicieron
                                                               # el 1 se suma por si dentro de los mas comunes esta el personaje que se le pide los similares  
@@ -59,6 +59,21 @@ def Similares(grafo_marvel, personaje, cantidad):
         posicion += 1       
 
     
+def Recomendar (grafo_marvel, personaje, cantidad):
+
+    recorrido = grafo_marvel.random_walk(5000, personaje, True)
+    cant_rep_personajes = Counter(recorrido)    
+    similares = cant_rep_personajes.most_common()
+
+    contador = 0
+    posicion = 0
+    adyacentes = grafo_marvel.adyacentes(personaje)
+    while (contador != cantidad):
+        if (similares[posicion][0] != personaje and similares[posicion][0] in adyacentes):
+            print(similares[posicion][0])
+            contador += 1
+        posicion += 1    
+
 
 
 
@@ -72,9 +87,10 @@ def main():
 
     grafo_marvel = crear_grafo_archivo(archivo)
 
+    print ("Similares\n")
     Similares(grafo_marvel, "IRON MAN", 3)
-
-
+    print ("\nRecomendados\n")
+    Recomendar(grafo_marvel, "SPIDER-MAN", 5)
 
 
 main()  
