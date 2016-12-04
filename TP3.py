@@ -1,5 +1,6 @@
 import grafo
 import sys
+import math
 from collections import Counter
 CANT_MAX_PARAM = 2
 ARCHIVO = 1
@@ -44,10 +45,14 @@ def crear_grafo_archivo(archivo):
     return grafo_marvel
 
 
-def Similares(grafo_marvel, personaje, cantidad):
-
+def similares(grafo_marvel, personaje, cantidad):
+    '''Parametros:
+        grafo.
+        personaje: el vertice del cual se quieren los similares.
+        cantidad: la cantidad de similares que se desea obtener.
+    Imprime los 'cantidad' similares del vertice recibido por parametro'''
     recorrido = grafo_marvel.random_walk(5000, personaje, True)
-    cant_rep_personajes = Counter(recorrido) #Devuelve un diccionario con los personajes que paso y cauntas veces paso por ese mismo
+    cant_rep_personajes = Counter(recorrido) #Devuelve un diccionario con los personajes que paso y cuantas veces paso por ese mismo
     similares = cant_rep_personajes.most_common(cantidad + 1) #Devuelve una lista en la que se guardan los personajes que mas se repitieron y cuantas veces lo hicieron
                                                               # el 1 se suma por si dentro de los mas comunes esta el personaje que se le pide los similares  
     contador = 0
@@ -59,8 +64,9 @@ def Similares(grafo_marvel, personaje, cantidad):
         posicion += 1       
 
     
-def Recomendar (grafo_marvel, personaje, cantidad):
-
+def recomendar (grafo_marvel, personaje, cantidad):
+    '''Recibe un grafo, un vertice(personaje), y la cantidad de recomendados que se queira obtener(cantidad).
+    Imprime los 'cantidad' recomendados del vertice que se ingresó por parametro'''
     recorrido = grafo_marvel.random_walk(5000, personaje, True)
     cant_rep_personajes = Counter(recorrido)    
     similares = cant_rep_personajes.most_common()
@@ -74,12 +80,59 @@ def Recomendar (grafo_marvel, personaje, cantidad):
             contador += 1
         posicion += 1    
 
+def camino(grafo_marvel, origen, destino):
+    '''Recibe un grafo, un vertice de salida(origen), y uno de llegada(destino).
+    Imprime el camino mas corto, en tiempo, para llegar de origen a destino. Este camino tiene en cuenta que
+    es conveniente que se desplace por los vertices que tienen mayor peso en la arista que los conecta, ya que
+    estos son los que mas se counican entre si'''
+    recorrido = grafo_marvel.camino_minimo(origen, destino, True);
+    for personaje in recorrido:
+        if personaje == destino: print(personaje)
+        else: print(personaje, '->', end = ' ')
 
+def distancias(grafo_marvel, vertice):
+    '''Recibe un grafo, y un vertice.
+    Para ese vértice imprime cuantos vértices tiene en cada nivel de adyacencia. Sus adyacentes directos forman el nivel 1,
+    los adyacentes de estos últimos forman el nivel 2, etc'''
+    (padre, orden) = grafo_marvel.bfs(vertice)
+    niveles = {}
+    for vertice in orden:
+        if orden[vertice] == 0: continue
+        if orden[vertice] not in niveles:
+            niveles[orden[vertice]] = 1
+        else:
+            niveles[orden[vertice]] += 1
 
+    for nivel in niveles:
+        print("Distancia {}: {}".format(nivel, niveles[nivel]))
+
+def estadisticas(grafo_marvel):
+    '''Recibe un grafo, e imprime los siguientes valores estadísticos:
+    cantidad de vertices, cantidad de aristas, densidad del grafo, promedio de los grados de los vertices, desviación estandar
+    del grado de cada vertice.'''
+
+    cant_vertices = len(grafo_marvel)
+    cant_aristas = grafo_marvel.obtener_cantidad_aristas()
+    cant_max_aristas = cant_vertices * (cant_vertices - 1) / 2
+    print("Cantidad de vertices:", cant_vertices)
+    print("Cantidad de aristas:", cant_aristas)
+    print("Densidad:", cant_aristas / cant_max_aristas)
+    acumulador = 0
+    for vertice in grafo_marvel:
+        #acumulador es para el promedio de los grados de los vértices
+        acumulador += len(grafo_marvel.adyacentes(vertice))
+    promedio_grados = acumulador / cant_vertices
+    print("Promedio del grado de cada vertice:", promedio_grados)
+    
+    #Desviacion estandar
+    sumatoria = 0
+    for vertice in grafo_marvel:
+        sumatoria += (len(grafo_marvel.adyacentes(vertice)) - promedio_grados)**2
+    print("Desvío estandar del grado de cada vértice:", math.sqrt(sumatoria / (cant_vertices - 1)))
 
 def main():
     
-    cant_parametros = len (sys.argv)
+    cant_parametros = len(sys.argv)
     if(cant_parametros != CANT_MAX_PARAM):
         raise ValueError("No se ingreso la cantidad de parametros correcto")
 
@@ -87,10 +140,33 @@ def main():
 
     grafo_marvel = crear_grafo_archivo(archivo)
 
+    '''
     print ("Similares\n")
     Similares(grafo_marvel, "IRON MAN", 3)
     print ("\nRecomendados\n")
     Recomendar(grafo_marvel, "SPIDER-MAN", 5)
 
+    print("\nCamino\n")
+    Camino(grafo_marvel, "STAN LEE", "CAPTAIN AMERICA")
 
-main()  
+    print("\nDistancia\n")
+    Distancias(grafo_marvel, "BLACK PANTHER")
+
+    estadisticas(grafo_marvel)'''
+
+
+    while(true):
+        comando = input("")
+        if comando == '': break
+        lista = comandos.split()
+        if lista[0] == similares: similares(grafo_marvel, lista[1].rstrip(), lista[2])
+        if lista[0] == recomendar: recomendar(grafo_marvel, lista[1].rstrip(), lista[2])
+        if lista[0] == camino: camino(grafo_marvel, lista[1], lista[2])
+        if lista[0] == distancias: distancias(grafo_marvel, lista[1])
+        if lista[0] == estadisticas: estadisticas(grafo_marvel)
+        if lista[0] == centralidad: centralidad(grafo_marvel, lista[1])
+        if lista[0] == comunidad: comunidad(grafo_marvel)
+
+
+
+main() 
