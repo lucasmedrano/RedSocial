@@ -53,8 +53,8 @@ def similares(grafo_marvel, personaje, cantidad):
     Imprime los 'cantidad' similares del vertice recibido por parametro'''
     recorrido = grafo_marvel.random_walk(5000, personaje, True)
     cant_rep_personajes = Counter(recorrido) #Devuelve un diccionario con los personajes que paso y cuantas veces paso por ese mismo
-    similares = cant_rep_personajes.most_common(cantidad + 1) #Devuelve una lista en la que se guardan los personajes que mas se repitieron y cuantas veces lo hicieron
-                                                              # el 1 se suma por si dentro de los mas comunes esta el personaje que se le pide los similares  
+    similares = cant_rep_personajes.most_common(cantidad + 1) #Devuelve una lista en la que se guardan los personajes que mas se repitieron y cuantas veces lo hicieron.
+                                                              # El 1 se suma por si dentro de los mas comunes esta el personaje que se le pide los similares  
     contador = 0
     posicion = 0
     while (contador != cantidad):
@@ -75,7 +75,7 @@ def recomendar (grafo_marvel, personaje, cantidad):
     posicion = 0
     adyacentes = grafo_marvel.adyacentes(personaje)
     while (contador != cantidad):
-        if (similares[posicion][0] != personaje and similares[posicion][0] in adyacentes):
+        if (similares[posicion][0] != personaje and not(similares[posicion][0] in adyacentes)):
             print(similares[posicion][0])
             contador += 1
         posicion += 1    
@@ -172,7 +172,6 @@ def main():
         comando = input("")
         if comando == '': break  
         lista = comando.split(',')
-        
         if lista[0] == "similares": similares(grafo_marvel, lista[1].rstrip(), int(lista[2]))
         if lista[0] == "recomendar": recomendar(grafo_marvel, lista[1].rstrip(), int(lista[2]))
         if lista[0] == "camino": camino(grafo_marvel, lista[1], lista[2])
