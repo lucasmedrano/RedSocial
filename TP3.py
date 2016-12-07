@@ -1,7 +1,6 @@
 import grafo
 import sys
 import math
-from collections import Counter
 CANT_MAX_PARAM = 2
 ARCHIVO = 1
 
