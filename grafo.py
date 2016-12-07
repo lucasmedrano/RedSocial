@@ -304,7 +304,10 @@ class Grafo():
 
 
     def label_propagation(self, largo):
-        '''   '''
+        ''' Devuelve un diccionario con los nombres de los vertices como clave y como dato su label. Para esto lo que se hace es
+        primero recorrer los vertices y sus adyacentes y colocarles como label el adyacente mas pesado. Luego se itera segun el largo 
+        ingresado y se van modificando los labels segun la cantidad de labels repetidos en los adyacentes de los vertices.
+        Si no se ve ningún cambio en los labels corta y termina antes  '''
 
         labels = {}
         personajes = self.vertices.keys()
