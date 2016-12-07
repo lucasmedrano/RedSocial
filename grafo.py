@@ -326,16 +326,16 @@ class Grafo():
         for i in range(largo):
             contador = 0
             for j in range(len(personajes)):
-                adyacentes = list(self.vertices[personajes[i]].keys())
+                adyacentes = list(self.vertices[personajes[j]].keys())
                 labels_adyacentes = []
                 for k in range(len(adyacentes)):
                     labels_adyacentes.append(labels[adyacentes[k]])
 
                 cant_rep_labels = Counter(labels_adyacentes)    
-                comun = cant_rep_labels.most_common(1)
-                if (labels[personajes[i]] != comun):
+                comunes = cant_rep_labels.most_common(1)
+                if (labels[personajes[j]] != comunes[0]):
                     contador += 1
-                    labels[personajes[i]] = comun
+                    labels[personajes[j]] = comunes[0]
             if (contador == 0):   
                 break     
 
