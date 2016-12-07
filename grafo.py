@@ -336,6 +336,8 @@ class Grafo():
                     contador += 1
                     labels[personajes[i]] = comun
             if (contador == 0):   
-                break     
+                break 
+                
+        return labels          
 
 
