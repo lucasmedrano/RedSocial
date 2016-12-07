@@ -170,40 +170,39 @@ def comunidades(grafo_marvel):
 
 
 
+def obtener_comando(cadena):
+    comando = ""
+    parametro1 = ""
+    parametro2 = ""
+    espacios = 0
+    comas = 0
+    for posicion, letra in enumerate(cadena):
+        if letra != ' ' and espacios == 0: comando += letra
+        elif espacios == 0 and letra == ' ': espacios = 1
+        else:
+            if(comas == 0 and letra != ','): parametro1 += letra
+            elif(comas == 1 and letra != ','): parametro2 += letra
+            elif letra == ',': comas += 1
+    return (comando, parametro1, parametro2.lstrip())
+
 def main():
-    
     cant_parametros = len(sys.argv)
     if(cant_parametros != CANT_MAX_PARAM):
-        raise ValueError("No se ingreso la cantidad de parametros correcto")
-    
+        raise ValueError("No se ingreso la cantidad de parametros correcta")
     archivo = sys.argv[ARCHIVO]    
-
     grafo_marvel = crear_grafo_archivo(archivo)
-  
-    '''
-    print ("Similares\n")
-    Similares(grafo_marvel, "IRON MAN", 3)
-    print ("\nRecomendados\n")
-    Recomendar(grafo_marvel, "SPIDER-MAN", 5)
-    print("\nCamino\n")
-    Camino(grafo_marvel, "STAN LEE", "CAPTAIN AMERICA")
-    print("\nDistancia\n")
-    Distancias(grafo_marvel, "BLACK PANTHER")
-    estadisticas(grafo_marvel)'''
-
-    
     while(True):
         comando = input("")
         if comando == '': break  
-        lista = comando.split(',')
-        if lista[0] == "similares": similares(grafo_marvel, lista[1].rstrip(), int(lista[2]))
-        if lista[0] == "recomendar": recomendar(grafo_marvel, lista[1].rstrip(), int(lista[2]))
-        if lista[0] == "camino": camino(grafo_marvel, lista[1], lista[2])
-        if lista[0] == "distancias": distancias(grafo_marvel, lista[1])
-        if lista[0] == "estadisticas": estadisticas(grafo_marvel)
-        if lista[0] == "centralidad": centralidad(grafo_marvel, int(lista[1]))
-        if lista[0] == "comunidad": comunidad(grafo_marvel)
-
+        comandos = obtener_comando(comando)
+        if comandos[0] == "similares": similares(grafo_marvel, comandos[1], int(comandos[2]))
+        elif comandos[0] == "recomendar": recomendar(grafo_marvel, comandos[1], int(comandos[2]))
+        elif comandos[0] == "camino": camino(grafo_marvel, comandos[1], comandos[2])
+        elif comandos[0] == "distancias": distancias(grafo_marvel, comandos[1])
+        elif comandos[0] == "estadisticas": estadisticas(grafo_marvel)
+        elif comandos[0] == "centralidad": centralidad(grafo_marvel, int(comandos[1]))
+        elif comandos[0] == "comunidad": comunidad(grafo_marvel)
+        print('\n')
     
 
 main() 
