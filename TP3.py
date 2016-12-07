@@ -1,6 +1,7 @@
 import grafo
 import sys
 import math
+from collections import Counter
 CANT_MAX_PARAM = 2
 ARCHIVO = 1
 
@@ -150,10 +151,10 @@ def comunidades(grafo_marvel):
     entre ellos. Para esto utiliza label propagation y después creo otro diccionario en el que pongo los labels como claves y 
     los vertices como dato para poder devolver las comunidades '''
     
-    labels = label_propagation(grafo_marvel, 100)
+    labels = grafo_marvel.label_propagation(10)
 
     comunidades = {}
-    lista_labels = labels.keys()
+    lista_labels = list(labels.keys())
     for i in range(len(lista_labels)):
         if (not(labels[lista_labels[i]] in comunidades)):
             comunidades[labels[lista_labels[i]]] = []
@@ -161,13 +162,11 @@ def comunidades(grafo_marvel):
 
         comunidades[labels[lista_labels[i]]].append(lista_labels[i])
 
-    lista_comunidades = camunidades.keys()
+    lista_comunidades = list(comunidades.keys())
     for i in range(len(lista_comunidades)):
-        if(len(comunidades[lista.comunidades[i]]) > 4 or len(comunidades[lista_comunidades[i]]) < 1000)
-            print("La cantidad de miembros de la comunidad es "len(comunidad[lista_comunidades[i]])"\n")
-            print(comunidades[lista_comunidades[i]]"\n")        
-
-
+        if(len(comunidades[lista_comunidades[i]]) > 4 and len(comunidades[lista_comunidades[i]]) < 1000):
+            print("\nLa cantidad de miembros de la comunidad es %d\n" % len(comunidades[lista_comunidades[i]]))
+            print(comunidades[lista_comunidades[i]])        
 
 
 def obtener_comando(cadena):
@@ -191,6 +190,7 @@ def main():
         raise ValueError("No se ingreso la cantidad de parametros correcta")
     archivo = sys.argv[ARCHIVO]    
     grafo_marvel = crear_grafo_archivo(archivo)
+    
     while(True):
         comando = input("")
         if comando == '': break  
@@ -201,8 +201,8 @@ def main():
         elif comandos[0] == "distancias": distancias(grafo_marvel, comandos[1])
         elif comandos[0] == "estadisticas": estadisticas(grafo_marvel)
         elif comandos[0] == "centralidad": centralidad(grafo_marvel, int(comandos[1]))
-        elif comandos[0] == "comunidad": comunidad(grafo_marvel)
+        elif comandos[0] == "comunidades": comunidades(grafo_marvel)
         print('\n')
     
 
-main() 
+main()  
