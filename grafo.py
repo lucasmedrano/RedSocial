@@ -293,7 +293,7 @@ class Grafo():
         recorrido.append(actual)
         if not(pesado):
             for i in range(largo):
-                actual = random.choice(self.vertices[actual].keys())
+                actual = random.choice(list(self.vertices[actual].keys()))
                 recorrido.append(actual)
         if(pesado):
             for i in range(largo):
@@ -310,24 +310,25 @@ class Grafo():
         Si no se ve ningún cambio en los labels corta y termina antes  '''
 
         labels = {}
-        personajes = self.vertices.keys()
+        personajes = list(self.vertices.keys())
         for i in range(len(personajes)):
-            adyacentes = self.vertices[personajes[i]].items()
-            mayor = (None,0)
+            adyacentes = list(self.vertices[personajes[i]].items())
+            mayor = 0
+            label = None
             for j in range(len(adyacentes)):
                 if(adyacentes[j][1] > mayor):
-                    mayor[1] = adyacentes[j][1]
-                    mayor[0] = adyacentes[j][0]
+                    mayor = adyacentes[j][1]
+                    label = adyacentes[j][0]
 
-            labels[self.vertices[personajes[i]]] = mayor[0]
+            labels[personajes[i]] = label
 
 
         for i in range(largo):
             contador = 0
             for j in range(len(personajes)):
-                adyacentes = self.vertices[personajes[i]].keys()
+                adyacentes = list(self.vertices[personajes[i]].keys())
                 labels_adyacentes = []
-                for k in range(adyacentes):
+                for k in range(len(adyacentes)):
                     labels_adyacentes.append(labels[adyacentes[k]])
 
                 cant_rep_labels = Counter(labels_adyacentes)    
@@ -336,8 +337,6 @@ class Grafo():
                     contador += 1
                     labels[personajes[i]] = comun
             if (contador == 0):   
-                break 
-                
-        return labels          
+                break     
 
-
+        return labels        
