@@ -1,6 +1,7 @@
 import random
 import math
 import heapq
+from collections import Counter
 
 visitar_nulo = lambda a,b,c,d: True
 heuristica_nula = lambda actual,destino: 0
@@ -300,3 +301,38 @@ class Grafo():
                 recorrido.append(actual)
             
         return recorrido
+
+
+    def label_propagation(self, largo):
+        '''   '''
+
+        labels = {}
+        personajes = self.vertices.keys()
+        for i in range(len(personajes)):
+            adyacentes = self.vertices[personajes[i]].items()
+            mayor = (None,0)
+            for j in range(len(adyacentes)):
+                if(adyacentes[j][1] > mayor):
+                    mayor[1] = adyacentes[j][1]
+                    mayor[0] = adyacentes[j][0]
+
+            labels[self.vertices[personajes[i]]] = mayor[0]
+
+
+        for i in range(largo):
+            contador = 0
+            for j in range(len(personajes)):
+                adyacentes = self.vertices[personajes[i]].keys()
+                labels_adyacentes = []
+                for k in range(adyacentes):
+                    labels_adyacentes.append(labels[adyacentes[k]])
+
+                cant_rep_labels = Counter(labels_adyacentes)    
+                comun = cant_rep_labels.most_common(1)
+                if (labels[personajes[i]] != comun):
+                    contador += 1
+                    labels[personajes[i]] = comun
+            if (contador == 0):   
+                break     
+
+
