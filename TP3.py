@@ -145,6 +145,31 @@ def estadisticas(grafo_marvel):
         sumatoria += (len(grafo_marvel.adyacentes(vertice)) - promedio_grados)**2
     print("Desvío estandar del grado de cada vértice:", math.sqrt(sumatoria / (cant_vertices - 1)))
 
+def comunidades(grafo_marvel):
+    ''' Recibe un grafo y muestras las comunidades que se forman a partir de que tan parecidos son los vertices
+    entre ellos. Para esto utiliza label propagation y después creo otro diccionario en el que pongo los labels como claves y 
+    los vertices como dato para poder devolver las comunidades '''
+    
+    labels = label_propagation(grafo_marvel, 100)
+
+    comunidades = {}
+    lista_labels = labels.keys()
+    for i in range(len(lista_labels)):
+        if (not(labels[lista_labels[i]] in comunidades)):
+            comunidades[labels[lista_labels[i]]] = []
+            comunidades[labels[lista_labels[i]]].append(lista_labels[i]) 
+
+        comunidades[labels[lista_labels[i]]].append(lista_labels[i])
+
+    lista_comunidades = camunidades.keys()
+    for i in range(len(lista_comunidades)):
+        if(len(comunidades[lista.comunidades[i]]) > 4 or len(comunidades[lista_comunidades[i]]) < 1000)
+            print("La cantidad de miembros de la comunidad es "len(comunidad[lista_comunidades[i]])"\n")
+            print(comunidades[lista_comunidades[i]]"\n")        
+
+
+
+
 def main():
     
     cant_parametros = len(sys.argv)
