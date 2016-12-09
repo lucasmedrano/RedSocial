@@ -150,7 +150,9 @@ def comunidades(grafo_marvel):
     ''' Recibe un grafo y muestras las comunidades que se forman a partir de que tan parecidos son los vertices
     entre ellos. Para esto utiliza label propagation y después creo otro diccionario en el que pongo los labels como claves y 
     los vertices como dato para poder devolver las comunidades '''
-    
+    comunidades_pequenas = 4
+    comunidades_grandes = 1000
+
     labels = grafo_marvel.label_propagation(10)
 
     comunidades = {}
@@ -164,7 +166,7 @@ def comunidades(grafo_marvel):
 
     lista_comunidades = list(comunidades.keys())
     for i in range(len(lista_comunidades)):
-        if(len(comunidades[lista_comunidades[i]]) > 4 and len(comunidades[lista_comunidades[i]]) < 1000):
+        if(len(comunidades[lista_comunidades[i]]) > comunidades_pequenas and len(comunidades[lista_comunidades[i]]) < comunidades_grandes):
             print("\nLa cantidad de miembros de la comunidad es %d\n" % len(comunidades[lista_comunidades[i]]))
             print(comunidades[lista_comunidades[i]])        
 
