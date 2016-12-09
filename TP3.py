@@ -97,11 +97,11 @@ def centralidad(grafo_marvel, cantidad):
     se repitan van a ser los mas centrales'''
     recorrido = grafo_marvel.random_walk(10000, None, True)
     cant_rep_personajes = Counter(recorrido)    
-    similares = cant_rep_personajes.most_common()
+    centrales = cant_rep_personajes.most_common()
 
     contador = 0
     while (contador != cantidad):
-        print(similares[contador][0])
+        print(centrales[contador][0])
         contador += 1
         
 
