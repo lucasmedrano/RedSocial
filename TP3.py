@@ -44,29 +44,10 @@ def crear_grafo_archivo(archivo):
     grafo_marvel = grafo.Grafo(vertices, False, cont_vertices, cont_aristas)
     return grafo_marvel
 
-
-def similares(grafo_marvel, personaje, cantidad):
-    '''Parametros:
-        grafo.
-        personaje: el vertice del cual se quieren los similares.
-        cantidad: la cantidad de similares que se desea obtener.
-    Imprime los 'cantidad' similares del vertice recibido por parametro'''
-    recorrido = grafo_marvel.random_walk(5000, personaje, True)
-    cant_rep_personajes = Counter(recorrido) #Devuelve un diccionario con los personajes que paso y cuantas veces paso por ese mismo
-    similares = cant_rep_personajes.most_common(cantidad + 1) #Devuelve una lista en la que se guardan los personajes que mas se repitieron y cuantas veces lo hicieron.
-                                                              # El 1 se suma por si dentro de los mas comunes esta el personaje que se le pide los similares  
-    contador = 0
-    posicion = 0
-    while (contador != cantidad):
-        if (similares[posicion][0] != personaje):
-            print(similares[posicion][0])
-            contador += 1
-        posicion += 1       
-
-    
-def recomendar (grafo_marvel, personaje, cantidad):
-    '''Recibe un grafo, un vertice(personaje), y la cantidad de recomendados que se queira obtener(cantidad).
-    Imprime los 'cantidad' recomendados del vertice que se ingresó por parametro'''
+def vertices_mas_repetidos(grafo_marvel, personaje, cantidad, condicion):
+    '''Esta función lo que hace es recorer con random_walks los vertices a partir del personaje recibido y luego con Counter y most_common
+    se obtienen los personajes ams similares y dependiendo de la condición que se recibe de evalua una condicion o otra para ver si lo
+    que se piden son los similares o los recomendados '''
     recorrido = grafo_marvel.random_walk(5000, personaje, True)
     cant_rep_personajes = Counter(recorrido)    
     similares = cant_rep_personajes.most_common()
@@ -75,10 +56,28 @@ def recomendar (grafo_marvel, personaje, cantidad):
     posicion = 0
     adyacentes = grafo_marvel.adyacentes(personaje)
     while (contador != cantidad):
-        if (similares[posicion][0] != personaje and not(similares[posicion][0] in adyacentes)):
+        if(condicion):
+            if (similares[posicion][0] != personaje and not(similares[posicion][0] in adyacentes)): #Recomendados
+                print(similares[posicion][0])
+                contador += 1
+        elif(similares[posicion][0] != personaje): #Similares
             print(similares[posicion][0])
-            contador += 1
-        posicion += 1    
+            contador += 1        
+        posicion += 1  
+
+def similares(grafo_marvel, personaje, cantidad):
+    '''Parametros:
+        grafo.
+        personaje: el vertice del cual se quieren los similares.
+        cantidad: la cantidad de similares que se desea obtener.
+    Imprime los 'cantidad' similares del vertice recibido por parametro'''
+    vertices_mas_repetidos(grafo_marvel, personaje, cantidad, False)     
+
+    
+def recomendar (grafo_marvel, personaje, cantidad):
+    '''Recibe un grafo, un vertice(personaje), y la cantidad de recomendados que se queira obtener(cantidad).
+    Imprime los 'cantidad' recomendados del vertice que se ingresó por parametro'''
+    vertices_mas_repetidos(grafo_marvel, personaje, cantidad, True)  
 
 def camino(grafo_marvel, origen, destino):
     '''Recibe un grafo, un vertice de salida(origen), y uno de llegada(destino).
