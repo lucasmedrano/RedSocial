@@ -4,6 +4,9 @@ import math
 from collections import Counter
 CANT_MAX_PARAM = 2
 ARCHIVO = 1
+POS_NOMBRE = 0
+POS_PARAMETRO1 = 1
+POS_PARAMETRO2 = 2
 
 
 def crear_grafo_archivo(archivo):
@@ -48,22 +51,25 @@ def vertices_mas_repetidos(grafo_marvel, personaje, cantidad, condicion):
     '''Esta función lo que hace es recorer con random_walks los vertices a partir del personaje recibido y luego con Counter y most_common
     se obtienen los personajes ams similares y dependiendo de la condición que se recibe de evalua una condicion o otra para ver si lo
     que se piden son los similares o los recomendados '''
-    recorrido = grafo_marvel.random_walk(5000, personaje, True)
-    cant_rep_personajes = Counter(recorrido)    
-    similares = cant_rep_personajes.most_common()
+    try:
+        recorrido = grafo_marvel.random_walk(5000, personaje, True)
+        cant_rep_personajes = Counter(recorrido)    
+        similares = cant_rep_personajes.most_common()
 
-    contador = 0
-    posicion = 0
-    adyacentes = grafo_marvel.adyacentes(personaje)
-    while (contador != cantidad):
-        if(condicion):
-            if (similares[posicion][0] != personaje and not(similares[posicion][0] in adyacentes)): #Recomendados
+        contador = 0
+        posicion = 0
+        adyacentes = grafo_marvel.adyacentes(personaje)
+        while (contador != cantidad):
+            if(condicion):
+                if (similares[posicion][0] != personaje and not(similares[posicion][0] in adyacentes)): #Recomendados
+                    print(similares[posicion][0])
+                    contador += 1
+            elif(similares[posicion][0] != personaje): #Similares
                 print(similares[posicion][0])
-                contador += 1
-        elif(similares[posicion][0] != personaje): #Similares
-            print(similares[posicion][0])
-            contador += 1        
-        posicion += 1  
+                contador += 1        
+            posicion += 1 
+    except KeyError:
+        print("El personaje no pertenece al grafo")
 
 def similares(grafo_marvel, personaje, cantidad):
     '''Parametros:
@@ -84,10 +90,14 @@ def camino(grafo_marvel, origen, destino):
     Imprime el camino mas corto, en tiempo, para llegar de origen a destino. Este camino tiene en cuenta que
     es conveniente que se desplace por los vertices que tienen mayor peso en la arista que los conecta, ya que
     estos son los que mas se counican entre si'''
-    recorrido = grafo_marvel.camino_minimo(origen, destino, True);
-    for personaje in recorrido:
-        if personaje == destino: print(personaje)
-        else: print(personaje, '->', end = ' ')
+    try:
+        recorrido = grafo_marvel.camino_minimo(origen, destino, True);
+        for personaje in recorrido:
+            if personaje == destino: print(personaje)
+            else: print(personaje, '->', end = ' ')
+
+    except KeyError:
+        print("Alguno de los personajes no pertenece al grafo")
 
 
 def centralidad(grafo_marvel, cantidad):
@@ -109,17 +119,20 @@ def distancias(grafo_marvel, vertice):
     '''Recibe un grafo, y un vertice.
     Para ese vértice imprime cuantos vértices tiene en cada nivel de adyacencia. Sus adyacentes directos forman el nivel 1,
     los adyacentes de estos últimos forman el nivel 2, etc'''
-    (padre, orden) = grafo_marvel.bfs(vertice)
-    niveles = {}
-    for vertice in orden:
-        if orden[vertice] == 0: continue
-        if orden[vertice] not in niveles:
-            niveles[orden[vertice]] = 1
-        else:
-            niveles[orden[vertice]] += 1
+    try:
+        (padre, orden) = grafo_marvel.bfs(vertice)
+        niveles = {}
+        for vertice in orden:
+            if orden[vertice] == 0: continue
+            if orden[vertice] not in niveles:
+                niveles[orden[vertice]] = 1
+            else:
+                niveles[orden[vertice]] += 1
 
-    for nivel in niveles:
-        print("Distancia {}: {}".format(nivel, niveles[nivel]))
+        for nivel in niveles:
+            print("Distancia {}: {}".format(nivel, niveles[nivel]))
+    except KeyError:
+        print("El personaje no pertenece al grafo")
 
 def estadisticas(grafo_marvel):
     '''Recibe un grafo, e imprime los siguientes valores estadísticos:
@@ -196,13 +209,13 @@ def main():
         comando = input("")
         if comando == '': break  
         comandos = obtener_comando(comando)
-        if comandos[0] == "similares": similares(grafo_marvel, comandos[1], int(comandos[2]))
-        elif comandos[0] == "recomendar": recomendar(grafo_marvel, comandos[1], int(comandos[2]))
-        elif comandos[0] == "camino": camino(grafo_marvel, comandos[1], comandos[2])
-        elif comandos[0] == "distancias": distancias(grafo_marvel, comandos[1])
-        elif comandos[0] == "estadisticas": estadisticas(grafo_marvel)
-        elif comandos[0] == "centralidad": centralidad(grafo_marvel, int(comandos[1]))
-        elif comandos[0] == "comunidades": comunidades(grafo_marvel)
+        if comandos[POS_NOMBRE] == "similares": similares(grafo_marvel, comandos[POS_PARAMETRO1], int(comandos[POS_PARAMETRO2]))
+        elif comandos[POS_NOMBRE] == "recomendar": recomendar(grafo_marvel, comandos[POS_PARAMETRO1], int(comandos[POS_PARAMETRO2]))
+        elif comandos[POS_NOMBRE] == "camino": camino(grafo_marvel, comandos[POS_PARAMETRO1], comandos[POS_PARAMETRO2])
+        elif comandos[POS_NOMBRE] == "distancias": distancias(grafo_marvel, comandos[POS_PARAMETRO1])
+        elif comandos[POS_NOMBRE] == "estadisticas": estadisticas(grafo_marvel)
+        elif comandos[POS_NOMBRE] == "centralidad": centralidad(grafo_marvel, int(comandos[POS_PARAMETRO1]))
+        elif comandos[POS_NOMBRE] == "comunidades": comunidades(grafo_marvel)
         print('\n')
     
 
