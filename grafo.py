@@ -164,10 +164,22 @@ class Grafo():
             - inicio: identificador del vertice que se usa como inicio. Si se indica un vertice, el recorrido se comenzara en dicho vertice, 
             y solo se seguira hasta donde se pueda (no se seguira con los vertices que falten visitar)
         Salida:
-            Tupla (padre, orden), donde :
+               (padre, orden) = grafo_marvel.bfs(vertice)
+        niveles = {}
+        for vertice in orden:
+            if orden[vertice] == 0: continue
+            if orden[vertice] not in niveles:
+                niveles[orden[vertice]] = 1
+            else:
+                niveles[orden[vertice]] += 1
+
+        for nivel in niveles:
+            print("Distancia {}: {}".format(nivel, niveles[nivel])) Tupla (padre, orden), donde :
                 - 'padre' es un diccionario que indica para un nombre, cual es el nombre del vertice padre en el recorrido BFS (None si es el inicio)
                 - 'orden' es un diccionario que indica para un nombre, cual es su orden en el recorrido BFS
         '''
+        if inicio not in self.vertices.keys():
+            raise KeyError()
         return self.recorrido("BFS", inicio)
 
 
@@ -215,6 +227,9 @@ class Grafo():
             - Listado de vertices (identificadores) ordenado con el recorrido, incluyendo a los vertices de origen y destino. 
             En caso que no exista camino entre el origen y el destino, se devuelve None. 
         '''
+        if((origen or destino) not in self.vertices.keys()):
+            raise KeyError()
+
         heap = []
         distancia = {}
         padre = {}
@@ -235,18 +250,15 @@ class Grafo():
             visitados[vertice] = True
 
             for adyacente in self.adyacentes(vertice):
-                if not inverso:
-                    if (visitados[adyacente] == False) and (distancia[adyacente] > (distancia[vertice] + self.obtener_peso_arista(vertice, adyacente))):
-                        distancia[adyacente] = distancia[vertice] + self.obtener_peso_arista(vertice, adyacente)
-                        padre[adyacente] = vertice
-                        personaje = Personaje(adyacente, distancia[adyacente])
-                        heapq.heappush(heap, personaje)
-                else:
-                    if (visitados[adyacente] == False) and (distancia[adyacente] > (distancia[vertice] + (1 / self.obtener_peso_arista(vertice, adyacente)))):
-                        distancia[adyacente] = (distancia[vertice]) + (1 / self.obtener_peso_arista(vertice, adyacente))
-                        padre[adyacente] = vertice
-                        personaje = Personaje(adyacente, distancia[adyacente])
-                        heapq.heappush(heap, personaje)
+                diff = self.obtener_peso_arista(vertice, adyacente)
+                if(inverso):
+                    diff = 1 / self.obtener_peso_arista(vertice, adyacente)
+                
+                if (visitados[adyacente] == False) and (distancia[adyacente] > (distancia[vertice] + diff)):
+                    distancia[adyacente] = distancia[vertice] + diff
+                    padre[adyacente] = vertice
+                    personaje = Personaje(adyacente, distancia[adyacente])
+                    heap.heappush(heap, personaje)
         return self.descubrir_camino(origen, destino, padre, distancia)
 
     def descubrir_camino(self, origen, destino, padre, distancia):
@@ -289,6 +301,8 @@ class Grafo():
         if not(origen):
             origen = random.choice(list(self.vertices.keys()))
 
+        if origen not in self.vertices.keys():
+            raise KeyError()
         actual = origen
         recorrido.append(actual)
         if not(pesado):
