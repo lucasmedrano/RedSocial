@@ -258,7 +258,7 @@ class Grafo():
                     distancia[adyacente] = distancia[vertice] + diff
                     padre[adyacente] = vertice
                     personaje = Personaje(adyacente, distancia[adyacente])
-                    heap.heappush(heap, personaje)
+                    heapq.heappush(heap, personaje)
         return self.descubrir_camino(origen, destino, padre, distancia)
 
     def descubrir_camino(self, origen, destino, padre, distancia):
