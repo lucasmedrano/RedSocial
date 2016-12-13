@@ -7,6 +7,10 @@ ARCHIVO = 1
 POS_NOMBRE = 0
 POS_PARAMETRO1 = 1
 POS_PARAMETRO2 = 2
+CANT_RANDOM_WALK = 100
+LARGO_RECORRIDO = 100
+COMUNIDADES_PEQUENAS = 4
+COMUNIDADES_GRANDES = 1000
 
 
 def crear_grafo_archivo(archivo):
@@ -47,26 +51,35 @@ def crear_grafo_archivo(archivo):
     grafo_marvel = grafo.Grafo(vertices, False, cont_vertices, cont_aristas)
     return grafo_marvel
 
-def vertices_mas_repetidos(grafo_marvel, personaje, cantidad, condicion):
+def vertices_mas_repetidos(grafo_marvel, personaje, cantidad, funcion):
     '''Esta función lo que hace es recorer con random_walks los vertices a partir del personaje recibido y luego con Counter y most_common
     se obtienen los personajes ams similares y dependiendo de la condición que se recibe de evalua una condicion o otra para ver si lo
     que se piden son los similares o los recomendados '''
     try:
-        recorrido = grafo_marvel.random_walk(5000, personaje, True)
+        recorrido = []
+        for i in range(CANT_RANDOM_WALK):
+            lista_aux = grafo_marvel.random_walk(LARGO_RECORRIDO, personaje, True)
+            recorrido = recorrido + lista_aux
+        
         cant_rep_personajes = Counter(recorrido)    
         similares = cant_rep_personajes.most_common()
 
         contador = 0
         posicion = 0
-        adyacentes = grafo_marvel.adyacentes(personaje)
+        if (funcion == "recomendar"):
+            adyacentes = grafo_marvel.adyacentes(personaje)
         while (contador != cantidad):
-            if(condicion):
-                if (similares[posicion][0] != personaje and not(similares[posicion][0] in adyacentes)): #Recomendados
-                    print(similares[posicion][0])
+            if(funcion == "recomendar"):
+                if (similares[posicion][POS_NOMBRE] != personaje and not(similares[posicion][0] in adyacentes)): #Recomendados
+                    print(similares[posicion][POS_NOMBRE])
                     contador += 1
-            elif(similares[posicion][0] != personaje): #Similares
-                print(similares[posicion][0])
-                contador += 1        
+            if (funcion == "similares"):
+                if (similares[posicion][POS_NOMBRE] != personaje): #Similares
+                    print(similares[posicion][POS_NOMBRE])
+                    contador += 1
+            if (funcion == "centralidad"):
+                print(similares[posicion][POS_NOMBRE]) #Centralidad 
+                contador += 1         
             posicion += 1 
     except KeyError:
         print("El personaje no pertenece al grafo")
@@ -77,13 +90,13 @@ def similares(grafo_marvel, personaje, cantidad):
         personaje: el vertice del cual se quieren los similares.
         cantidad: la cantidad de similares que se desea obtener.
     Imprime los 'cantidad' similares del vertice recibido por parametro'''
-    vertices_mas_repetidos(grafo_marvel, personaje, cantidad, False)     
+    vertices_mas_repetidos(grafo_marvel, personaje, cantidad, "similares")     
 
     
 def recomendar (grafo_marvel, personaje, cantidad):
     '''Recibe un grafo, un vertice(personaje), y la cantidad de recomendados que se queira obtener(cantidad).
     Imprime los 'cantidad' recomendados del vertice que se ingresó por parametro'''
-    vertices_mas_repetidos(grafo_marvel, personaje, cantidad, True)  
+    vertices_mas_repetidos(grafo_marvel, personaje, cantidad, "recomendar")  
 
 def camino(grafo_marvel, origen, destino):
     '''Recibe un grafo, un vertice de salida(origen), y uno de llegada(destino).
@@ -104,14 +117,7 @@ def centralidad(grafo_marvel, cantidad):
     ''' Recibe un grafo y una cantidad que indica la cantidad de personajes centrales de la red que se van a mostrar.
     Para esto lo que se va a hacer es recorrer varias veces con random_walk desde vertices alearios y la cantidad de vertices que mas 
     se repitan van a ser los mas centrales'''
-    recorrido = grafo_marvel.random_walk(10000, None, True)
-    cant_rep_personajes = Counter(recorrido)    
-    centrales = cant_rep_personajes.most_common()
-
-    contador = 0
-    while (contador != cantidad):
-        print(centrales[contador][0])
-        contador += 1
+    vertices_mas_repetidos(grafo_marvel, None, cantidad, "centralidad")
         
 
 
@@ -162,8 +168,6 @@ def comunidades(grafo_marvel):
     ''' Recibe un grafo y muestras las comunidades que se forman a partir de que tan parecidos son los vertices
     entre ellos. Para esto utiliza label propagation y después creo otro diccionario en el que pongo los labels como claves y 
     los vertices como dato para poder devolver las comunidades '''
-    comunidades_pequenas = 4
-    comunidades_grandes = 1000
 
     labels = grafo_marvel.label_propagation(10)
 
@@ -174,11 +178,11 @@ def comunidades(grafo_marvel):
             comunidades[labels[lista_labels[i]]] = []
             comunidades[labels[lista_labels[i]]].append(lista_labels[i]) 
 
-        comunidades[labels[lista_labels[i]]].append(lista_labels[i])
+        else: comunidades[labels[lista_labels[i]]].append(lista_labels[i])
 
     lista_comunidades = list(comunidades.keys())
     for i in range(len(lista_comunidades)):
-        if(len(comunidades[lista_comunidades[i]]) > comunidades_pequenas and len(comunidades[lista_comunidades[i]]) < comunidades_grandes):
+        if(len(comunidades[lista_comunidades[i]]) > COMUNIDADES_PEQUENAS and len(comunidades[lista_comunidades[i]]) < COMUNIDADES_GRANDES):
             print("\nLa cantidad de miembros de la comunidad es %d\n" % len(comunidades[lista_comunidades[i]]))
             print(comunidades[lista_comunidades[i]])        
 
